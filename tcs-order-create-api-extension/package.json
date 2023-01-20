@@ -1,0 +1,61 @@
+{
+  "name": "b2b-order-create-api-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint-md": "remark -f .",
+    "format": "eslint --fix .",
+    "deploy-staging": "firebase deploy -P staging --only functions:b2bOrderCreate",
+    "deploy-prod": "firebase deploy -P prod --only functions:b2bOrderCreate",
+    "test": "jest"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@commercetools/api-request-builder": "^4.1.1",
+    "@commercetools/sdk-client": "^1.5.10",
+    "@commercetools/sdk-middleware-auth": "^4.0.10",
+    "@commercetools/sdk-middleware-http": "^4.0.9",
+    "@commercetools/sdk-middleware-logger": "^1.0.7",
+    "@commercetools/sdk-middleware-queue": "^1.1.7",
+    "@commercetools/sdk-middleware-user-agent": "^2.0.0",
+    "firebase-admin": "^8.6.0",
+    "firebase-functions": "^3.3.0",
+    "json-rules-engine": "^5.0.3",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-jest": "^23.0.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "firebase-functions-test": "^0.1.6",
+    "jest": "24.9.0",
+    "prettier-eslint": "^9.0.0",
+    "remark-cli": "^7.0.0",
+    "remark-preset-lint-recommended": "^3.0.3"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended"
+    ]
+  },
+  "jest": {
+    "clearMocks": true,
+    "collectCoverage": false,
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/.*/__mocks__"
+    ]
+  }
+}

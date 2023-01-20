@@ -1,0 +1,199 @@
+name: B2B MS Quote CI/CD release (master) flow
+on:
+  repository_dispatch:
+    types: ms-quote
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/b2b-ms-quote/**'
+      - '.github/workflows/ms-quote-ci-master.yaml'
+      - '*.json'
+env:
+    GCP_SDK_VERSION: '276.0.0'
+    GITHUB_SHA: ${{ github.sha }}
+    IMAGE: commercetools-ms-quote
+    IMAGE_GATEWAY: commercetools-ms-gateway
+    CT_AUTH_URL: https://auth.us-central1.gcp.commercetools.com
+    CT_API_URL: https://api.us-central1.gcp.commercetools.com
+    CT_PROJECT_KEY: drl-dev
+    CT_CLIENT_ID: U4twMKLxeK5JVNVbExdWssm5
+    CT_CLIENT_SECRET: 0ib_LmWPIMYwL7hVEbEMAOOIwNMGT0Id
+    CT_SCOPE: manage_project:drl-dev
+    GC_PROJECT_ID: commerce-tools-b2b-services
+    EMPLOYEE_MS_URL: https://ms-employee-f4b4o225iq-ue.a.run.app/employees
+    QUOTE_MS_URL: https://ms-quote-f4b4o225iq-ue.a.run.app/quotes
+
+jobs:
+  lint:
+    name: Lint (node.js, dockerfile, markdown)
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]    
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: |
+        cd packages/b2b-ms-quote
+        npm install --no-audit
+        cd ../b2b-ms-gateway
+        npm install --no-audit
+
+    - name: Lint Node.js
+      run: |
+        cd packages/b2b-ms-quote
+        npm run lint
+        cd ../b2b-ms-gateway
+        npm run lint
+
+    - name: Lint Markdown
+      run: |
+        cd packages/b2b-ms-quote
+        npm run lint-md
+        cd ../b2b-ms-gateway
+        npm run lint-md
+
+    - name: Lint Dockerfile
+      run: |
+        cd packages/b2b-ms-quote
+        docker run -i hadolint/hadolint:v1.17.3 < Dockerfile
+        cd ../b2b-ms-gateway
+        docker run -i hadolint/hadolint:v1.17.3 < Dockerfile
+
+  build:
+    name: Build (node.js)
+    needs: lint
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.0
+        with:
+          version: $GCP_SDK_Version
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
+
+      # Build the Docker image
+      - name: Build with Docker
+        run: |
+          cd packages/b2b-ms-quote
+          docker build -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA" \
+            --build-arg PORT=8080 .
+          cd ../b2b-ms-gateway
+          docker build -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA" \
+            --build-arg PORT=8080 .     
+
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |
+          docker push gcr.io/$GC_PROJECT_ID/$IMAGE:$GITHUB_SHA
+          docker push gcr.io/$GC_PROJECT_ID/$IMAGE_GATEWAY:$GITHUB_SHA
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]   
+    steps:
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.0
+        with:
+          version: $GCP_SDK_Version
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - run: |
+          # Set up docker to authenticate
+          # via gcloud command-line tool.
+          gcloud auth configure-docker
+
+      - name: Unit Testing
+        run: |
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm test"
+
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm test"
+
+      - name: Audit for security vulnerabilities
+        run: |
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm audit --production"
+
+          docker run --rm --user=root --entrypoint="/bin/bash"                  \
+          -t gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA"                     \
+          -c "NODE_ENV=development; cd /opt/node_app/app; git config --global http.sslVerify false; npm install; npm audit --production"
+  
+  deploy_quote_ms:
+    name: Deploy Quote MS
+    needs: build
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.0
+        with:
+          version: $GCP_SDK_Version
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy to App Engine
+        run: |
+          # Interpolate environment variables
+          cd packages/b2b-ms-quote
+          gcloud config set project $GC_PROJECT_ID
+          gcloud run deploy ms-quote --platform=managed --region=us-east1 --allow-unauthenticated     \
+          --image=gcr.io/"$GC_PROJECT_ID"/"$IMAGE":"$GITHUB_SHA"                                      \
+          --set-env-vars=HOST="0.0.0.0",CT_AUTH_URL=$CT_AUTH_URL,CT_API_URL=$CT_API_URL,CT_PROJECT_KEY=$CT_PROJECT_KEY,CT_CLIENT_ID=$CT_CLIENT_ID,CT_CLIENT_SECRET=$CT_CLIENT_SECRET,CT_SCOPE=$CT_SCOPE,GC_PROJECT_ID=$GC_PROJECT_ID
+
+  deploy_gateway_ms:
+    name: Deploy Gateway to Staging
+    needs: deploy_quote_ms
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@0.1.0
+        with:
+          version: $GCP_SDK_Version
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy to Cloud Run
+        run: |
+          # Interpolate environment variables
+          cd packages/b2b-ms-gateway
+          gcloud config set project $GC_PROJECT_ID
+          gcloud run deploy ms-gateway --platform=managed --region=us-east1 --allow-unauthenticated   \
+          --image=gcr.io/"$GC_PROJECT_ID"/"$IMAGE_GATEWAY":"$GITHUB_SHA"                                      \
+          --set-env-vars=HOST="0.0.0.0",GC_PROJECT_ID=$GC_PROJECT_ID,EMPLOYEE_MS_URL=$EMPLOYEE_MS_URL,QUOTE_MS_URL=$QUOTE_MS_URL
