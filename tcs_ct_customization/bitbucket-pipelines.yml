@@ -1,0 +1,52 @@
+image: hashicorp/terraform:0.13.6
+pipelines:                 
+  branches:
+    dev:
+      - step:
+          name: Deploy to Dev
+          deployment: Dev
+          script:
+            - echo "INTEGRATION_ACCESS_KEY = '$INTEGRATION_ACCESS_KEY'" >> packages/b2b-terraform/default/dev.tfvars
+            - echo "INTEGRATION_SECRET_KEY = '$INTEGRATION_SECRET_KEY'" >> packages/b2b-terraform/default/dev.tfvars  
+            - sed -i "s/'/\"/g" packages/b2b-terraform/default/dev.tfvars  
+            - cd packages/b2b-terraform/default/      
+            - terraform init -backend-config="bucket=commercetool-devops" -backend-config="key=tf-state/dev/dev" -backend-config="region=us-west-2"
+            - terraform plan -var-file="dev.tfvars" -out=default_plan.tfplan -input=false
+            - terraform apply -input=false default_plan.tfplan
+    qa:
+      - step:
+          name: Deploy to QA
+          deployment: qa
+          script:
+            - echo "INTEGRATION_ACCESS_KEY = '$INTEGRATION_ACCESS_KEY'" >> packages/b2b-terraform/default/qa.tfvars
+            - echo "INTEGRATION_SECRET_KEY = '$INTEGRATION_SECRET_KEY'" >> packages/b2b-terraform/default/qa.tfvars
+            - sed -i "s/'/\"/g" packages/b2b-terraform/default/qa.tfvars
+            - cd  packages/b2b-terraform/default/
+            - terraform init -backend-config="bucket=commercetool-devops" -backend-config="key=tf-state/qa/qa" -backend-config="region=us-west-2"
+            - terraform plan -var-file="qa.tfvars" -out=default_plan.tfplan -input=false
+            - terraform apply -input=false default_plan.tfplan
+    uat:
+      - step:
+          name: Deploy to UAT
+          deployment: uat
+          script:
+            - echo "INTEGRATION_ACCESS_KEY = '$INTEGRATION_ACCESS_KEY'" >> packages/b2b-terraform/default/uat.tfvars
+            - echo "INTEGRATION_SECRET_KEY = '$INTEGRATION_SECRET_KEY'" >> packages/b2b-terraform/default/uat.tfvars
+            - sed -i "s/'/\"/g" packages/b2b-terraform/default/uat.tfvars
+            - cd  packages/b2b-terraform/default/
+            - terraform init -backend-config="bucket=commercetool-devops" -backend-config="key=tf-state/uat/uat" -backend-config="region=us-west-2"
+            - terraform plan -var-file="uat.tfvars" -out=default_plan.tfplan -input=false
+            - terraform apply -input=false default_plan.tfplan
+    master:
+      - step:
+          name: Deploy to Production
+          deployment: production
+          script:
+            - echo "INTEGRATION_ACCESS_KEY = '$INTEGRATION_ACCESS_KEY'" >> packages/b2b-terraform/default/prod.tfvars
+            - echo "INTEGRATION_SECRET_KEY = '$INTEGRATION_SECRET_KEY'" >> packages/b2b-terraform/default/prod.tfvars
+            - sed -i "s/'/\"/g" packages/b2b-terraform/default/prod.tfvars
+            - cd  packages/b2b-terraform/default/
+            - terraform init -backend-config="bucket=commercetool-devops" -backend-config="key=tf-state/prod/prod" -backend-config="region=us-west-2"
+            - terraform plan -var-file="prod.tfvars" -out=default_plan.tfplan -input=false
+            - terraform apply -input=false default_plan.tfplan
+

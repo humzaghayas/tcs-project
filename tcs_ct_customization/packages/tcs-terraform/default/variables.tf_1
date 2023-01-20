@@ -1,0 +1,21 @@
+variable "avalara_integration_arn" {}
+variable "INTEGRATION_ACCESS_KEY" {}
+variable "INTEGRATION_SECRET_KEY" {}
+variable "order_create_subscription_url" {}
+variable "order_realease_subscription_url" {}
+variable "aws_region" {}
+variable "adyen_payment_arn" {}
+variable "order_extension_arn" {}
+variable "signifyd_order_subscription_url" {}
+variable "warranty_extension_arn" {}
+variable "fg_tax_category_id"  {}
+variable "beanz_tax_category_id" {}
+variable "sp_tax_category_id"  {}
+variable "ac_tax_category_id"  {}
+variable "sc_tax_category_id" {}
+
+
+
+
+
+
