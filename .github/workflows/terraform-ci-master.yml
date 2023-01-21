@@ -70,7 +70,7 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-18.04
-    environment: production
+    environment: tcs-env
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
