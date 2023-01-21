@@ -49,7 +49,7 @@ on:
     types: terraform
   push:
     branches:
-      - master
+      - main
     paths:
       - 'tcs_ct_customization/packages/b2b-terraform/**'
       - '.github/workflows/terraform-ci-master.yaml'
