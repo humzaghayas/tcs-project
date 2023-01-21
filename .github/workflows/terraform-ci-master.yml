@@ -52,7 +52,7 @@ on:
       - main
     paths:
       - 'tcs_ct_customization/packages/b2b-terraform/**'
-      - '.github/workflows/terraform-ci-master.yaml'
+      - '.github/workflows/terraform-ci-master.yml'
 
 env:
   COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/0.19.0/terraform-provider-commercetools-0.19.0-linux-amd64.tar.gz'
