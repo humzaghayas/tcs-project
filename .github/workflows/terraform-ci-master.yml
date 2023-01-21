@@ -46,8 +46,7 @@ name: 'Terraform'
 
 on:
   push:
-    branches: 
-      -"master"
+    branches: [ "main" ]
     paths:
       - 'tcs_ct_customization/packages/b2b-terraform/**'
       - '.github/workflows/terraform-ci-master.yaml'
@@ -71,7 +70,7 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-18.04
-    environment: production
+    environment: tcs-env
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -81,7 +80,7 @@ jobs:
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@main
       
     - name: 'Install Terraform'
       run: |
@@ -105,7 +104,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: 'Install Terraform'
         run: |
