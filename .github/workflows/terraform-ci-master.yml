@@ -45,8 +45,11 @@
 name: 'Terraform'
 
 on:
-  pull_request:
-    types: [closed]
+  repository_dispatch:
+    types: terraform
+  push:
+    branches:
+      - master
     paths:
       - 'tcs_ct_customization/packages/b2b-terraform/**'
       - '.github/workflows/terraform-ci-master.yaml'
