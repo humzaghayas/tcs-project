@@ -102,7 +102,6 @@ jobs:
         terraform validate
   plan_and_apply:
     name: Terraform Plan and Apply
-    needs: validate
     runs-on: ubuntu-18.04
     steps:
       - name: 'Checkout'
