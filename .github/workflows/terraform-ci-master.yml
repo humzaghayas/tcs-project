@@ -51,7 +51,7 @@ on:
     branches:
       - main
     paths:
-      - 'tcs_ct_customization/packages/b2b-terraform/**'
+      - 'tcs_ct_customization/packages/tcs-terraform/**'
 
 env:
   COMMERCETOOLS_URL: 'https://github.com/labd/terraform-provider-commercetools/releases/download/0.19.0/terraform-provider-commercetools-0.19.0-linux-amd64.tar.gz'
@@ -71,7 +71,7 @@ env:
 jobs:
   terraform:
     name: 'Terraform'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     environment: tcs-env
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -103,7 +103,7 @@ jobs:
         terraform validate
   plan_and_apply:
     name: Terraform Plan and Apply
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
       - name: 'Checkout'
         uses: actions/checkout@main

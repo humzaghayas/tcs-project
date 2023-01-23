@@ -9,6 +9,9 @@ const tcsOrderCreation = async (req, res) => {
 
   const order = req.body.resource.obj;
 
+  console.log('order',order);
+  console.log('order' + JSON.stringify( order));
+
   res.status(200).json({ result: 'ok' });
   
 };
