@@ -11,21 +11,21 @@ on:
       - '*.json'
       - '*.yml'
       - '*.yaml'
-env:
-  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-  PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-  PROJECT_PATH: tcs-order-create-api-extension
-  CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
-  CT_API_URL: ${{ secrets.CT_API_URL }}
-  CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
-  CT_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
-  CT_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
-  CT_SCOPE: ${{ secrets.CT_SCOPE }} 
 jobs:
   lint:
     name: Lint (node.js)
     runs-on: ubuntu-22.04
     environment: tcs-env
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      PROJECT_PATH: tcs-order-create-api-extension
+      CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
+      CT_API_URL: ${{ secrets.CT_API_URL }}
+      CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
+      CT_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
+      CT_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
+      CT_SCOPE: ${{ secrets.CT_SCOPE }} 
     strategy:
       matrix:
         node-version: [16.x]
@@ -53,6 +53,16 @@ jobs:
     needs: lint
     runs-on: ubuntu-22.04
     environment: tcs-env
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      PROJECT_PATH: tcs-order-create-api-extension
+      CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
+      CT_API_URL: ${{ secrets.CT_API_URL }}
+      CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
+      CT_CLIENT_ID: ${{ secrets.CT_CLIENT_ID }}
+      CT_CLIENT_SECRET: ${{ secrets.CT_CLIENT_SECRET }}
+      CT_SCOPE: ${{ secrets.CT_SCOPE }}     
     strategy:
       matrix:
         node-version: [16.x]       
