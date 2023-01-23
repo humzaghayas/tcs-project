@@ -33,7 +33,7 @@ jobs:
         node-version: [10.x]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@main
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -73,6 +73,6 @@ jobs:
           npm install --production
 
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        uses: w9jds/firebase-action@main
         with:
           args: deploy --only functions:tscOrderCreate
