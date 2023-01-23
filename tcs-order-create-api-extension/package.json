@@ -7,8 +7,8 @@
     "lint": "eslint .",
     "lint-md": "remark -f .",
     "format": "eslint --fix .",
-    "deploy-staging": "firebase deploy -P staging --only functions:b2bOrderCreate",
-    "deploy-prod": "firebase deploy -P prod --only functions:b2bOrderCreate",
+    "deploy-staging": "firebase deploy -P staging --only functions:tcsOrderCreate",
+    "deploy-prod": "firebase deploy -P prod --only functions:tcsOrderCreate",
     "test": "jest"
   },
   "engines": {
