@@ -12,8 +12,8 @@ on:
       - '*.yml'
       - '*.yaml'
 env:
-  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-  PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+  FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
+  PROJECT_ID: "${{ secrets.FIREBASE_PROJECT_ID }}"
   PROJECT_PATH: tcs-order-create-api-extension
   CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
   CT_API_URL: ${{ secrets.CT_API_URL }}
@@ -28,7 +28,7 @@ jobs:
     environment: tcs-env
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@main
@@ -55,7 +55,7 @@ jobs:
     environment: tcs-env
     strategy:
       matrix:
-        node-version: [10.x]       
+        node-version: [16.x]       
     steps:
       - name: Checkout Repo
         uses: actions/checkout@main
