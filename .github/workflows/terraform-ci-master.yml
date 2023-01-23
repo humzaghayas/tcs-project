@@ -95,7 +95,7 @@ jobs:
         tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
     - name: 'Terraform Lint'
       run: |
-        cd packages/b2b-terraform/default
+        cd tcs_ct_customization/packages/tcs-terraform/default
         echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
         terraform init -input=false
         terraform fmt -check=true -diff=true || ( echo >&2 "Canonical format and style doesn't match convention. Please fix (try running 'terraform fmt' locally)."; exit 3; )
