@@ -95,6 +95,7 @@ jobs:
         tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
     - name: 'Terraform Lint'
       run: |
+        sed -i "s/'/\"/g" tcs_ct_customization/packages/tcs-terraform/default/dev.tfvars
         cd tcs_ct_customization/packages/tcs-terraform/default
         echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
         terraform init -input=false
@@ -118,11 +119,13 @@ jobs:
           tar xzf commercetools.tar.gz -C ~/.terraform.d/plugins      
       - name: 'Terraform Plan'
         run: |
+          sed -i "s/'/\"/g" tcs_ct_customization/packages/tcs-terraform/default/dev.tfvars
           cd tcs_ct_customization/packages/tcs-terraform/default
           echo ${{ secrets.GOOGLE_CLIENT_SECRET_base64 }} | base64 -d > serviceaccount.json
           terraform init -input=false
           terraform plan -out=default_plan.tfplan -input=false
       - name: 'Terraform Apply'
         run: |
+          sed -i "s/'/\"/g" tcs_ct_customization/packages/tcs-terraform/default/dev.tfvars
           cd tcs_ct_customization/packages/tcs-terraform/default
           terraform apply -input=false default_plan.tfplan
