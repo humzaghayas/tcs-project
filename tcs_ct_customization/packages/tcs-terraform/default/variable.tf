@@ -4,7 +4,7 @@ variable "gcp_project_id" {
   default     = "commerce-tools-b2b-services"
 }
 
-variable "ct_project_key" {
+ variable "ct_project_key" {
   type        = string
   description = "The Commerce Tools projct key"
   default     = "tcs-test-project"
