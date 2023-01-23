@@ -9,11 +9,8 @@ const tcsOrderCreation = async (req, res) => {
 
   const order = req.body.resource.obj;
 
-  console.log('order',order);
   console.log('order' + JSON.stringify( order));
-
-  return res.status(200).json({ result: 'ok' });
-  
+  return res.status(200).json({ result: 'ok1' });  
 };
 
 module.exports = {
