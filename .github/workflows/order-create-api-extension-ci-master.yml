@@ -11,8 +11,6 @@ on:
       - '*.json'
       - '*.yml'
       - '*.yaml'
-environment:
-      - tcs-env
 env:
   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
   PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
