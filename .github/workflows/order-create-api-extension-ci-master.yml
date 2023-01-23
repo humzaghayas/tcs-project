@@ -1,21 +1,22 @@
-name: B2B Order Create API Extension Function CI/CD release (master) flow
+name: TCS
 on:
   repository_dispatch:
-    types: order-craeate-api-extension
+    types: tcs-order-create-api-extension
   push:
     branches:
-      - master
+      - main
     paths:
       - 'tcs-order-create-api-extension/**'
       - '.github/workflows/order-create-api-extension-ci-master.yml'
       - '*.json'
       - '*.yml'
       - '*.yaml'
+environment:
+      - tcs-env
 env:
   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
   PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-  PROJECT_PATH: packages/b2b-order-create-api-extension
-  COMPANY_MS_URL: https://ms-company-${{ secrets.MS_DOMAIN }}
+  PROJECT_PATH: tcs-order-create-api-extension
   CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
   CT_API_URL: ${{ secrets.CT_API_URL }}
   CT_PROJECT_KEY: ${{ secrets.CT_PROJECT_KEY }}
@@ -26,6 +27,7 @@ jobs:
   lint:
     name: Lint (node.js)
     runs-on: ubuntu-22.04
+    environment: tcs-env
     strategy:
       matrix:
         node-version: [10.x]
@@ -38,26 +40,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          cd packages/b2b-order-create-api-extension
+          cd tcs-order-create-api-extension
           npm install --no-audit
       - name: Lint Node.js
         run: |
-          cd packages/b2b-order-create-api-extension
+          cd tcs-order-create-api-extension
           npm run lint
       - name: Lint Markdown
         run: |
-          cd packages/b2b-order-create-api-extension
+          cd tcs-order-create-api-extension
           npm run lint-md
   deploy:
     name: Deploy Firebase function
     needs: lint
     runs-on: ubuntu-22.04
+    environment: tcs-env
     strategy:
       matrix:
         node-version: [10.x]       
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -66,15 +69,10 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd packages/b2b-order-create-api-extension
+          cd tcs-order-create-api-extension
           npm install --production
-
-      - name: Set environment variables
-        uses: w9jds/firebase-action@master
-        with:
-          args: functions:config:set company.url=$COMPANY_MS_URL ct.authurl=$CT_AUTH_URL ct.apiurl=$CT_API_URL ct.projectkey=$CT_PROJECT_KEY ct.clientid=$CT_CLIENT_ID ct.clientsecret=$CT_CLIENT_SECRET ct.scope=$CT_SCOPE
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only functions:b2bOrderCreate
+          args: deploy --only functions:tscOrderCreate
