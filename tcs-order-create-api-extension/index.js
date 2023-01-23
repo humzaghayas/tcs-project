@@ -12,7 +12,7 @@ const tcsOrderCreation = async (req, res) => {
   console.log('order',order);
   console.log('order' + JSON.stringify( order));
 
-  res.status(200).json({ result: 'ok' });
+  return res.status(200).json({ result: 'ok' });
   
 };
 
