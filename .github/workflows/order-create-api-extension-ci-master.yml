@@ -12,8 +12,8 @@ on:
       - '*.yml'
       - '*.yaml'
 env:
-  FIREBASE_TOKEN: "${{ secrets.FIREBASE_TOKEN }}"
-  PROJECT_ID: "${{ secrets.FIREBASE_PROJECT_ID }}"
+  FIREBASE_TOKEN: 1//03iCXhA8czIrICgYIARAAGAMSNwF-L9IrwSCW3HIsANYrnEv4pBe7gkJ381wcqE-Vo3LBJ1h340hRYYTi6YsI3c7UP5D5vmUvjaY
+  PROJECT_ID: commerce-tools-b2b-services
   PROJECT_PATH: tcs-order-create-api-extension
   CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
   CT_API_URL: ${{ secrets.CT_API_URL }}
