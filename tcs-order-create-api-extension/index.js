@@ -9,16 +9,17 @@ const tcsOrderCreation = async (req, res) => {
 
   const order = req.body.resource.obj;
 
-  if(order.type === 'Order'){
+  if (order.type === 'Order') {
+    const sumOfallProdQty = order.customLineItems
+      .map(cli => cli.quantity)
+      .reduce((partialSum, q) => partialSum + q, 0);
 
-    const sumOfallProdQty = order.customLineItems.map(cli => cli.quantity).reduce((partialSum , q) => partialSum+q,0);
-
-    if(sumOfallProdQty < 4){
-      return res.status(400).json({ 
+    if (sumOfallProdQty < 4) {
+      return res.status(400).json({
         errors: {
-          code:2000,
-          message:"Cart should contain atleast 4 products to be able to checkout!"
-        } 
+          code: 2000,
+          message: `Cart should contain atleast 4 products to be able to checkout!`
+        }
       });
     }
   }
