@@ -4,9 +4,10 @@ const functions = require('firebase-functions');
 const tcsOrderCreation = async (req, res) => {
   if (!req.body || !req.body.resource || !req.body.resource) {
     console.log('keep alive call');
-    return res.status(200);
+    return res.status(200).end();
   }
 
+  console.log('req.body', req.body);
   const order = req.body.resource.obj;
 
   if (order.type === 'Order') {
@@ -18,14 +19,16 @@ const tcsOrderCreation = async (req, res) => {
       return res.status(400).json({
         errors: [
           {
-            code: `InvalidOperation`,
+            code: `FailedValidation`,
             message: `Cart should contain atleast 4 products to be able to checkout!`
           }
         ]
       });
     }
   }
-  return res.status(200);
+
+  console.log('Success!');
+  return res.status(200).end();
 };
 
 module.exports = {
