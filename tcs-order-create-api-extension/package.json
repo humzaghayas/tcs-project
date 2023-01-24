@@ -64,5 +64,6 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/.*/__mocks__"
     ]
-  }
+  },
+  "eslintIgnore": ["test/*.js"]
 }
