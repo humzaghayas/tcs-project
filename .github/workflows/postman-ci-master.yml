@@ -1,0 +1,24 @@
+name: Automated API tests using Postman CLI
+
+on:
+  repository_dispatch:
+    types: tcs-postman-collection
+  push:
+    branches:
+      - main
+env:
+   POSTMAN_API_KEY: 'PMAK-63cfa93d20a89c187847eb81-b7e027f74810517f8216eb1abc9abe73f5'
+  
+jobs:
+  automated-api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key "POSTMAN_API_KEY"
+      - name: Run API tests
+        run: |
+          postman collection run "7160393-44800be8-ca95-42fa-81e8-f7879a9be9cd" -e "7160393-96b71cdc-4252-41b5-a881-0c17b1bac048"
