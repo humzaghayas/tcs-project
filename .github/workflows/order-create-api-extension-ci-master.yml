@@ -48,6 +48,31 @@ jobs:
         run: |
           cd tcs-order-create-api-extension
           npm run lint-md
+  test:        
+    name: Test
+    needs: lint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: |
+          cd tcs-order-create-api-extension
+          npm install
+          
+      - name: Unit Testing
+        run: |
+          cd tcs-order-create-api-extension
+          npm test
   deploy:
     name: Deploy Firebase function
     needs: lint
