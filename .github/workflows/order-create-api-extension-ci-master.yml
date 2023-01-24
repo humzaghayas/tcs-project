@@ -49,7 +49,8 @@ jobs:
           cd tcs-order-create-api-extension
           npm run lint-md
   test:        
-    name: Unit Test
+    name: Test
+    needs: lint
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -74,6 +75,7 @@ jobs:
           npm test
   deploy:
     name: Deploy Firebase function
+    needs: lint
     runs-on: ubuntu-22.04
     environment: tcs-env
     strategy:
