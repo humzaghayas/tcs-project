@@ -49,7 +49,7 @@ jobs:
           cd tcs-order-create-api-extension
           npm run lint-md
   test:        
-    name: Test
+    name: Unit Test
     needs: lint
     runs-on: ubuntu-22.04
     strategy:
