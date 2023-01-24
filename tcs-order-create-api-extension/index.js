@@ -19,7 +19,7 @@ const tcsOrderCreation = async (req, res) => {
       return res.status(400).json({
         errors: [
           {
-            code: `FailedValidation`,
+            code: `InternalConstraintViolated`,
             message: `Cart should contain atleast 4 products to be able to checkout!`
           }
         ]
