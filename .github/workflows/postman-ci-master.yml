@@ -3,9 +3,7 @@ name: Automated API tests using Postman CLI
 on:
   repository_dispatch:
     types: tcs-postman-collection
-  push:
-    branches:
-      - main
+
 env:
    POSTMAN_API_KEY: 'PMAK-63cfa93d20a89c187847eb81-b7e027f74810517f8216eb1abc9abe73f5'
   
