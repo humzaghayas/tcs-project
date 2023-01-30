@@ -81,8 +81,6 @@ jobs:
     needs: lint
     runs-on: ubuntu-22.04
     environment: tcs-env
-    with:
-        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}    
     strategy:
       matrix:
         node-version: [16.x]       
@@ -106,4 +104,5 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
+          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
           args: deploy --only functions:tcsOrderCreate
