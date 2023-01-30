@@ -53,6 +53,8 @@ jobs:
     name: Unit Test
     needs: lint
     runs-on: ubuntu-22.04
+    env:
+        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}     
     strategy:
       matrix:
         node-version: [16.x]
@@ -79,6 +81,8 @@ jobs:
     needs: lint
     runs-on: ubuntu-22.04
     environment: tcs-env
+    env:
+        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}    
     strategy:
       matrix:
         node-version: [16.x]       
