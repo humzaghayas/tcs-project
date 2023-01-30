@@ -24,7 +24,6 @@ jobs:
   lint:
     name: Lint (node.js)
     runs-on: ubuntu-22.04
-    environment: tcs-env
     env:
         FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
     strategy:
@@ -80,7 +79,6 @@ jobs:
     name: Deploy Firebase function
     needs: lint
     runs-on: ubuntu-22.04
-    environment: tcs-env
     env:
         FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}    
     strategy:
