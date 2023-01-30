@@ -87,6 +87,9 @@ jobs:
       matrix:
         node-version: [16.x]       
     steps:
+      - name: Check Var
+        run: echo "FIREBASE_TOKEN -- $FIREBASE_TOKEN ......"
+
       - name: Checkout Repo
         uses: actions/checkout@main
 
