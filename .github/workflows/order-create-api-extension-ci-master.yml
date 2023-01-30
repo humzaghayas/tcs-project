@@ -12,7 +12,8 @@ on:
       - '*.yml'
       - '*.yaml'
 env:
-  PROJECT_ID: commerce-tools-b2b-services
+  FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+  PROJECT_ID: ${{secrets.PROJECT_ID}}
   PROJECT_PATH: tcs-order-create-api-extension
   CT_AUTH_URL: ${{ secrets.CT_AUTH_URL }}
   CT_API_URL: ${{ secrets.CT_API_URL }}
@@ -24,8 +25,6 @@ jobs:
   lint:
     name: Lint (node.js)
     runs-on: ubuntu-22.04
-    env:
-        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
     strategy:
       matrix:
         node-version: [16.x]
@@ -52,8 +51,6 @@ jobs:
     name: Unit Test
     needs: lint
     runs-on: ubuntu-22.04
-    env:
-        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}     
     strategy:
       matrix:
         node-version: [16.x]
@@ -79,15 +76,10 @@ jobs:
     name: Deploy Firebase function
     needs: lint
     runs-on: ubuntu-22.04
-    env:
-        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}    
     strategy:
       matrix:
         node-version: [16.x]       
     steps:
-      - name: Check Var
-        run: echo "FIREBASE_TOKEN -- $FIREBASE_TOKEN ......"
-
       - name: Checkout Repo
         uses: actions/checkout@main
 
