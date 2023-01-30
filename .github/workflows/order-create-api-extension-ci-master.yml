@@ -81,7 +81,7 @@ jobs:
     needs: lint
     runs-on: ubuntu-22.04
     environment: tcs-env
-    env:
+    with:
         FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}    
     strategy:
       matrix:
