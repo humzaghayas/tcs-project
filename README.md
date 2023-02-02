@@ -1,6 +1,4 @@
-# commercetools Serverless Plugin
-
-[commercetools's](https://commercetools.com/) plugin for the [Serverless Framework](https://serverless.com) allows you to seamlessly integrate your serverless functions with commercetools' extensibility options.
+# commercetools POC
 
 ## Contents
 
