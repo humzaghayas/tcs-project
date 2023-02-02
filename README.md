@@ -21,9 +21,10 @@
 
 ## Install
 
-```sh
+In <<Project ROOT>> run this to install
+```
 npm install
-
+```
 
 ## Configuration
 
@@ -52,12 +53,12 @@ Add environment vars for the deploy type ("extension") :
 
 ```yml
 
-	<<PROJECT ROOT>>\github\workflows\order-create-api-extension-ci-master.yml
+    <<PROJECT ROOT>>\github\workflows\order-create-api-extension-ci-master.yml
     in evv section
-	place these values in github repository secrets 
-	
-	  FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
-	  PROJECT_ID: ${{secrets.PROJECT_ID}}
+    place these values in github repository secrets 
+    
+      FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+      PROJECT_ID: ${{secrets.PROJECT_ID}}
       PROECT_PATH: tcs-order-create-api-extension
 ```
 
