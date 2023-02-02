@@ -28,6 +28,8 @@ npm install
 
 ## Configuration
 
+### Terraforms
+
 Add your commercetools' project settings :
 
 ```tf
