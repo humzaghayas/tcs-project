@@ -7,11 +7,9 @@
 - [Features](#features)
 - [Install](#install)
 - [Configuration](#configuration)
-  - [Terraforms]
+  - [Terraforms](#terraforms)
   - [API Extension](#api-extension)
 - [Usage](#usage)
-- [Help](#help)
-- [Development](#development)
 
 ## Features
 
