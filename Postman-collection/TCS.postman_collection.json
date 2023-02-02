@@ -1,0 +1,420 @@
+{
+	"info": {
+		"_postman_id": "44800be8-ca95-42fa-81e8-f7879a9be9cd",
+		"name": "TCS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7160393"
+	},
+	"item": [
+		{
+			"name": "Obtain access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var data = JSON.parse(responseBody);",
+							"if(data.access_token){",
+							"    pm.environment.set(\"ctp_access_token\", data.access_token);",
+							"}",
+							"if (data.scope) {",
+							"    parts = data.scope.split(\" \");",
+							"    parts = parts.filter(scope => scope.includes(\":\")).map(scope => scope.split(\":\"))",
+							"    if (parts.length > 0) {",
+							"        scopeParts = parts[0];",
+							"        pm.environment.set(\"project-key\", scopeParts[1]);",
+							"        parts = parts.filter(scope => scope.length >= 3)",
+							"        if (parts.length > 0) {",
+							"            scopeParts = parts[0];",
+							"            pm.environment.set(\"store-key\", scopeParts[2]);",
+							"        }",
+							"    }",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{client_id}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{client_secret}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{auth_url}}/oauth/token?grant_type=client_credentials",
+					"host": [
+						"{{auth_url}}"
+					],
+					"path": [
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials"
+						}
+					]
+				},
+				"description": "Use this request to obtain an access token for your commercetools platform project via Client Credentials Flow. As a prerequisite you must have filled out environment variables in Postman for projectKey, client_id and client_secret to use this."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code \" + responseCode.code] = responseCode.code === 200 || responseCode.code === 201;",
+							"var data = JSON.parse(responseBody);",
+							"if(data.results && data.results[0] && data.results[0].id && data.results[0].version){",
+							"    pm.environment.set(\"cart-id\", data.results[0].id); ",
+							"    pm.environment.set(\"cart-version\", data.results[0].version);",
+							"}",
+							"if(data.results && data.results[0] && data.results[0].key){",
+							"    pm.environment.set(\"cart-key\", data.results[0].key); ",
+							"}",
+							"if(data.version){",
+							"    pm.environment.set(\"cart-version\", data.version);",
+							"}",
+							"if(data.id){",
+							"    pm.environment.set(\"cart-id\", data.id); ",
+							"}",
+							"if(data.key){",
+							"    pm.environment.set(\"cart-key\", data.key);",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{ctp_access_token}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"currency\" : \"GBP\",\n  \"customerEmail\":\"test@test.com\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/{{project-key}}/carts",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{project-key}}",
+						"carts"
+					],
+					"query": [
+						{
+							"key": "expand",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Creating a cart can fail with an InvalidOperation if the referenced shipping method in the\nCartDraft has a predicate which does not match the cart.\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Cart - add line item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code \" + responseCode.code] = responseCode.code === 200 || responseCode.code === 201;",
+							"var data = JSON.parse(responseBody);",
+							"if(data.results && data.results[0] && data.results[0].id && data.results[0].version){",
+							"    pm.environment.set(\"cart-id\", data.results[0].id); ",
+							"    pm.environment.set(\"cart-version\", data.results[0].version);",
+							"}",
+							"if(data.results && data.results[0] && data.results[0].key){",
+							"    pm.environment.set(\"cart-key\", data.results[0].key); ",
+							"}",
+							"if(data.version){",
+							"    pm.environment.set(\"cart-version\", data.version);",
+							"}",
+							"if(data.id){",
+							"    pm.environment.set(\"cart-id\", data.id); ",
+							"}",
+							"if(data.key){",
+							"    pm.environment.set(\"cart-key\", data.key);",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{ctp_access_token}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"version\" : 1,\n  \"actions\" : [ {\n    \"action\" : \"addCustomLineItem\",\n    \"name\" : {\n        \"de\": \"productA\",\n        \"en\": \"productA\"\n        },\n    \"slug\":\"productA\",\n    \"quantity\" : 2,\n    \"money\":{\n        \"currencyCode\" : \"GBP\",\n        \"centAmount\" : 5500\n        },\n    \"taxCategory\":{\n        \"key\":\"NO_TAX\"\n    }\n  } ]\n}"
+				},
+				"url": {
+					"raw": "{{host}}/{{project-key}}/carts/{{cart-id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{project-key}}",
+						"carts",
+						"{{cart-id}}"
+					],
+					"query": [
+						{
+							"key": "expand",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Update Cart by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Cart - add shipping address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code \" + responseCode.code] = responseCode.code === 200 || responseCode.code === 201;",
+							"var data = JSON.parse(responseBody);",
+							"if(data.results && data.results[0] && data.results[0].id && data.results[0].version){",
+							"    pm.environment.set(\"cart-id\", data.results[0].id); ",
+							"    pm.environment.set(\"cart-version\", data.results[0].version);",
+							"}",
+							"if(data.results && data.results[0] && data.results[0].key){",
+							"    pm.environment.set(\"cart-key\", data.results[0].key); ",
+							"}",
+							"if(data.version){",
+							"    pm.environment.set(\"cart-version\", data.version);",
+							"}",
+							"if(data.id){",
+							"    pm.environment.set(\"cart-id\", data.id); ",
+							"}",
+							"if(data.key){",
+							"    pm.environment.set(\"cart-key\", data.key);",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{ctp_access_token}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"version\" : 4,\n  \"actions\" : [ {\n    \"action\" : \"setShippingAddress\",\n    \"address\" : {\n        \"country\": \"GB\",\n        \"city\": \"Liverpool\",\n        \"firstName\": \"Tom\",\n        \"lastName\": \"Cruise\",\n        \"streetName\": \"asasd\",\n        \"streetNumber\": \"32323\"\n    }\n  } ]\n}"
+				},
+				"url": {
+					"raw": "{{host}}/{{project-key}}/carts/{{cart-id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{project-key}}",
+						"carts",
+						"{{cart-id}}"
+					],
+					"query": [
+						{
+							"key": "expand",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Update Cart by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order TCS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Error Quantity less than 4 \" + responseCode.code] = responseCode.code === 400 || responseCode.code === 200;",
+							"var data = JSON.parse(responseBody);",
+							"if(data.results && data.results[0] && data.results[0].id && data.results[0].version){",
+							"    pm.environment.set(\"order-id\", data.results[0].id); ",
+							"    pm.environment.set(\"order-version\", data.results[0].version);",
+							"}",
+							"if(data.results && data.results[0] && data.results[0].key){",
+							"    pm.environment.set(\"order-key\", data.results[0].key); ",
+							"}",
+							"if(data.version){",
+							"    pm.environment.set(\"order-version\", data.version);",
+							"}",
+							"if(data.id){",
+							"    pm.environment.set(\"order-id\", data.id); ",
+							"}",
+							"if(data.key){",
+							"    pm.environment.set(\"order-key\", data.key);",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{ctp_access_token}}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n     \"cart\":{\n        \"id\":\"{{cart-id}}\",\n        \"typeId\":\"cart\"\n     },\n        \"paymentState\":\"Pending\",\n        \"orderState\":\"Open\",\n        \"version\":{{cart-version}}\n    }"
+				},
+				"url": {
+					"raw": "{{host}}/{{project-key}}/orders",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{project-key}}",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "expand",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Creates an order from a Cart.\nThe cart must have a shipping address set before creating an order.\nWhen using the Platform TaxMode, the shipping address is used for tax calculation.\n"
+			},
+			"response": []
+		}
+	]
+}
